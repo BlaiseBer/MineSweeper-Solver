@@ -56,7 +56,6 @@ class Game:
         for key in self.list.keys():
             print(str(key) + " : " + self.list[key].toString() + "\n")
 
-
         l = []  # zones impactées
         for p in self.values.grid.getCircle(play.pos[0], play.pos[1]):
             # on cherche la première zone qui contient la case ou le drapeau a été joué.
