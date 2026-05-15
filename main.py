@@ -1,8 +1,8 @@
 import random as rd
 from Game import Game
 
-N = 5
-n = 3
+N = 10
+n = 10
 
 game = Game(n, N, "GoodStart")
 

@@ -61,18 +61,16 @@ class Game:
             # on cherche la première zone qui contient la case ou le drapeau a été joué.
             zone = None
             for key in self.list.keys():
-                zone = self.list[key]  # attention tu ne supprime pas de list !!
-                if (play.pos in zone.cells)  and not(key in l):
+                zone = self.list[key]
+                if (play.pos in zone.cells) and not(key in l):
                     l.append(zone.number)
                     break
 
-            if zone == None:
-                return
-
             # ensuite seule les zones connectées à cette zone peuvent contenir la case jouée
-            for num in self.links[zone.number]:
-                if (play.pos in self.list[num].cells) and not(num in l):
-                    l.append(num)
+            if zone != None:
+                for num in self.links[zone.number]:
+                    if (play.pos in self.list[num].cells) and not(num in l):
+                        l.append(num)
 
         for i in range(len(l) - 1, -1, -1):  # on modifie les zones impactées directement
             zone = self.list[l[i]]
@@ -84,7 +82,6 @@ class Game:
                     l.remove(l[i])
 
         if play.nom == "Flag":
-
             # On met un drapeau à la bonne position
             self.found.grid.update(play.pos[0], play.pos[1], -1)
 
