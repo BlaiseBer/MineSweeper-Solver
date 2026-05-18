@@ -18,7 +18,7 @@ class Zone:
             Zone.NUMBER += 1
             self.bombs = found.grid.get(play.pos[0], play.pos[1])
 
-            #les zones déjà révélées ne doivent pas êtres ajoutées à la zone
+            #les zones déjà révélées ne doivent pas êtres ajoutés à la zone
             for e in found.grid.getCircle(play.pos[0], play.pos[1]):
                 if found.grid.get(e[0], e[1]) == -2:
                     self.cells.append(e)

@@ -2,15 +2,9 @@ from grid.Found import Found
 from grid.Values import Values
 from utilities.Zone import Zone
 from utilities.Play import Play
+from Window.Fenetre import Fenetre
 
 class Game:
-    N=0
-    n=0
-
-    list = {}
-    links = {}
-
-    pile = []
 
     def __init__(self, n, N, type):
         self.list = {}
@@ -29,6 +23,12 @@ class Game:
 
         #On ajoute le premier coup à la pile
         self.pile.append(Play("Del", N//2,N//2))
+
+        self.fen = Fenetre(self.n,  self.N, self)
+        self.fen.title("MineSweeper_Solver")
+
+    def start(self):
+        self.fen.mainloop()
 
     def step(self):
 
@@ -137,11 +137,6 @@ class Game:
                         self.pile.append(Play('Del', e[0], e[1]))
                     for e in L2_exclude_L1:
                         self.pile.append(Play('Flag', e[0], e[1]))
-
-    def start(self):
-        while len(self.pile) > 0:
-            self.step()
-        print("plus rien à jouer !")
 
     def nettoyer(self, zone):
         if zone.bombs <= 0:
