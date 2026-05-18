@@ -5,11 +5,10 @@ The principle of the algorithm is to create "zones" that keep the coordinates of
 A queue ("file") is used to keep in memory all moves that were added and play them one after the other (breadth first search).
 
 problems to solve:
-- For now, most bugs seems fixed
+- In some cases, the solver miss some plays that it could do and get stuck
 
 to implement :
-- better visulization (with a dedicated window)
-- buttons
+- Improve the appearance of the window
 
 Future optimizations :
 - Instead of using a linked graph that links each zones to overlapping zones, it would be better to use a dictionnary that links boxes to the zones by wich they are contained.
