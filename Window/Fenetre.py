@@ -1,4 +1,3 @@
-import threading
 import tkinter as tk
 from PIL import Image
 from PIL import ImageTk
@@ -12,18 +11,17 @@ class Fenetre(tk.Tk):
         self.N = N
         self.game = game
         self.grid_frame = tk.Frame(self)
-        self.PackingEvent = threading.Event()
 
         #Dict to easily access images from their number
         self.images = {}
         filename = os.path.dirname(__file__)
         dir = os.path.join(filename, "minesweeper_icons")
         with os.scandir(dir) as d:
-            for path in d:
-                image = Image.open(path)
+            for dirEntry in d:
+                image = Image.open(dirEntry.path)
                 image = image.resize((20, 20), Image.Resampling.LANCZOS)
                 image = ImageTk.PhotoImage(image)
-                self.images[os.path.basename(path)] = image
+                self.images[os.path.basename(dirEntry.path)] = image
 
         self.init_widget()
 
@@ -45,7 +43,6 @@ class Fenetre(tk.Tk):
         self.update_grid()
 
     def update_grid(self):
-        self.PackingEvent.clear()
         for widget in self.grid_frame.winfo_children():
             widget.destroy()
 
@@ -56,13 +53,11 @@ class Fenetre(tk.Tk):
                 label = tk.Label(self.grid_frame, image=self.images[key], padx=0, pady=0)
                 label.grid(column=i, row=j, padx=0, pady=0, ipadx=0, ipady=0)
         self.grid_frame.pack()
-        self.PackingEvent.set()
 
     def auto_solve(self):
         if len(self.game.pile) > 0:
             self.after(0, self.game.step)
             self.after(0,self.update_grid)
-            self.PackingEvent.wait()
             self.after(300, self.auto_solve)
         else:
             print("plus rien à jouer !")
