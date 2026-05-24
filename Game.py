@@ -1,5 +1,6 @@
 from grid.Found import Found
 from grid.Values import Values
+from utilities.Ordlist import Ordlist
 from utilities.Zone import Zone
 from utilities.Play import Play
 from Window.Fenetre import Fenetre
@@ -62,19 +63,19 @@ class Game:
             zone = None
             for key in self.list.keys():
                 zone = self.list[key]
-                if (play.pos in zone.cells) and not(key in l):
+                if zone.cells.isInside(play.pos) and not(key in l):
                     l.append(zone.number)
                     break
 
             # ensuite seule les zones connectées à cette zone peuvent contenir la case jouée
             if zone != None:
                 for num in self.links[zone.number]:
-                    if (play.pos in self.list[num].cells) and not(num in l):
+                    if self.list[num].cells.isInside(play.pos) and not(num in l):
                         l.append(num)
 
         for i in range(len(l) - 1, -1, -1):  # on modifie les zones impactées directement
             zone = self.list[l[i]]
-            if play.pos in zone.cells:
+            if zone.cells.isInside(play.pos):
                 zone.cells.remove(play.pos)
                 if play.nom == "Flag":
                     zone.bombs -= 1
@@ -98,10 +99,10 @@ class Game:
             self.list[tempZone.number] = tempZone
             # on ajoute ses arêtes
             self.links[tempZone.number] = []
-            for e in tempZone.cells:
+            for e in tempZone.cells.list:  #Optimisable ???
                 for num in self.list.keys():
                     zone = self.list[num]
-                    if (e in zone.cells) and (zone != tempZone):
+                    if zone.cells.isInside(e) and (zone != tempZone):
                         if not (tempZone.number in self.links[zone.number]):
                             self.links[zone.number].append(tempZone.number)
                             self.links[tempZone.number].append(zone.number)
@@ -116,17 +117,15 @@ class Game:
 
                 #cas ou l'un est inclus dans l'autre (facile)
                 if len(L1_exclude_L2) == 0:
-                    for e in tempZone.cells:
-                        zone.cells.remove(e)
+                    zone.cells = Ordlist(self.N, liste=L2_exclude_L1)
                     zone.bombs -= tempZone.bombs
                     self.nettoyer(zone)
                 elif len(L2_exclude_L1) == 0:
-                    for e in zone.cells:
-                        tempZone.cells.remove(e)
+                    tempZone.cells = Ordlist(self.N, liste=L1_exclude_L2)
                     tempZone.bombs -= zone.bombs
                     self.nettoyer(tempZone)
 
-                # Sinon, il y a certain(s) cas particulier ou l'on peut quand même simplifier
+                # Sinon, il y a certain(s) cas particulier où l'on peut quand même simplifier
                 elif tempZone.bombs - len(L1_exclude_L2) == zone.bombs:
                     for e in L2_exclude_L1:
                         self.pile.append(Play('Del', e[0], e[1]))
@@ -139,16 +138,21 @@ class Game:
                         self.pile.append(Play('Flag', e[0], e[1]))
 
     def nettoyer(self, zone):
-        if zone.bombs <= 0:
-            for e in zone.cells:
+        if zone.bombs <=0 and len(zone.cells.list) <= 1:
+            for e in zone.cells.list:
                 self.pile.append(Play("Del", e[0], e[1]))
             self.delZone(zone.number)
             return True
-        elif len(zone.cells) == zone.bombs:
-            for e in zone.cells:
+        elif zone.bombs <= 0:
+            for e in zone.cells.list:
+                self.pile.append(Play("Del", e[0], e[1]))
+            return True
+        elif len(zone.cells.list) == zone.bombs:
+            for e in zone.cells.list:
                 self.pile.append(Play('Flag', e[0], e[1]))
             self.delZone(zone.number)
             return True
+        return False
 
     def delZone(self, num):
         if num in self.list.keys():
