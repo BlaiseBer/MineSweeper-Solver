@@ -18,9 +18,9 @@ class Grid:
         return l
 
     def printGrid(self):
-        for i in range(self.N):
+        for j in range(self.N):
             l = ""
-            for j in range(self.N):
+            for i in range(self.N):
                 if self.grid[i][j] == -2:
                     l += "🟦" + " "
                 elif self.grid[i][j] == -1:

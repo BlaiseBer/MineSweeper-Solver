@@ -15,6 +15,7 @@ class Zone:
                 for j in range(self.N):
                     self.cells.add((i, j))
         else:
+            self.N = found.grid.N
             self.cells = Ordlist(self.N)
             self.number = Zone.NUMBER
             Zone.NUMBER += 1

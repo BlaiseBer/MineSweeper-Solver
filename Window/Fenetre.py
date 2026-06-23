@@ -28,7 +28,7 @@ class Fenetre(tk.Tk):
     def init_widget(self):
 
         label = tk.Label(self, text="Grille")
-        bouton = tk.Button(self, text="Suivant", command=lambda: (self.game.step(), self.update_grid()))
+        bouton = tk.Button(self, text="Suivant", command=lambda: (self.game.jouer_les_coups(), self.update_grid()))
         bouton2 = tk.Button(self, text="Auto", command=lambda: (self.auto_solve(), self.update_grid()))
         label.pack()
         bouton.pack()
@@ -55,8 +55,8 @@ class Fenetre(tk.Tk):
         self.grid_frame.pack()
 
     def auto_solve(self):
-        if len(self.game.pile) > 0:
-            self.after(0, self.game.step)
+        if len(self.game.pile_coup) > 0:
+            self.after(0, self.game.jouer_les_coups)
             self.after(0,self.update_grid)
             self.after(300, self.auto_solve)
         else:
